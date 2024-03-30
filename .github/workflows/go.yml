@@ -18,7 +18,7 @@ jobs:
     steps:
 
     - uses: actions/checkout@v3
-    - run: apt install zip
+    - run: sudo apt install zip
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
@@ -35,11 +35,6 @@ jobs:
       with:
         name: build_win
         path: artifact
-
-  publish_win:
-    runs-on: ubuntu-latest
-    steps:
-    - run: GAME_VERSION=`date +%Y-%m-%d` && export GAME_VERSION
     - uses: actions/download-artifact@master
       with:
         name: build_win
