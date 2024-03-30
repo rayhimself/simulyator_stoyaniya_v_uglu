@@ -37,8 +37,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
       with:
-        tag_name: release-$GAME_VERSION
-        release_name: release-$GAME_VERSION
+        tag_name: release-${{ steps.version.outputs.game_version }}
+        release_name: release-${{ steps.version.outputs.game_version }}
         draft: true
         prerelease: false
 
