@@ -18,9 +18,9 @@ jobs:
     steps:
     - name: Retrieve version
       run: | 
-        GAME_VERSION=`date +%Y-%m-%d` && export GAME_VERSION \
-        echo $GAME_VERSION
-        echo "GAME_VERSION=$GAME_VERSION" >> "$GITHUB_ENV"
+        VERSION=`date +%Y-%m-%d` && export VERSION \
+        echo $VERSION
+        echo "GAME_VERSION=$VERSION" >> "$GITHUB_ENV"
       id: version
     - uses: actions/checkout@v3
     - run: sudo apt install zip
