@@ -16,14 +16,17 @@ jobs:
     env: 
       GOOS: windows
     steps:
-
+    - name: Retrieve version
+      run: | 
+        GAME_VERSION=`date +%Y-%m-%d` && export GAME_VERSION
+        echo "GAME_VERSION=$GAME_VERSION" >> "$GITHUB_ENV"
+      id: version
     - uses: actions/checkout@v3
     - run: sudo apt install zip
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
         go-version: '1.21.5'
-    - run: GAME_VERSION=`date +%Y-%m-%d` && export GAME_VERSION
     - run: go build .
     - run: mkdir release-$GAME_VERSION
     - run: cp -r _assets release-$GAME_VERSION/
