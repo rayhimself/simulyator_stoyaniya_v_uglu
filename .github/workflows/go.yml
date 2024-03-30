@@ -1,0 +1,72 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: Go
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build_win:
+    runs-on: ubuntu-latest
+    env: 
+      GOOS: windows
+    steps:
+
+    - uses: actions/checkout@v3
+    - run: apt install zip
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.20'
+    - run: GAME_VERSION=`date +%Y-%m-%d` && export GAME_VERSION
+    - run: go build .
+    - run: mkdir release-$GAME_VERSION
+    - run: mkdir artifact
+    - run: cp -r _assets release-$GAME_VERSION/
+    - run: cp simulyator_stoyaniya_v_uglu.exe release-$GAME_VERSION/
+    - run: zip -r release-$GAME_VERSION release-$GAME_VERSION
+    - run: mv release-$GAME_VERSION.zip artifact
+    - uses: actions/upload-artifact@master
+      with:
+        name: build_win
+        path: artifact
+
+  publish_win:
+    runs-on: ubuntu-latest
+    steps:
+    - run: GAME_VERSION=`date +%Y-%m-%d` && export GAME_VERSION
+    - uses: actions/download-artifact@master
+      with:
+        name: build_win
+        path: artifact
+
+    - name: Create Draft Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+      with:
+        tag_name: release-$GAME_VERSION
+        release_name: release-$GAME_VERSION
+        draft: true
+        prerelease: false
+
+    - uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./release-$GAME_VERSION.zip
+        asset_name: release-$GAME_VERSION.zip
+        asset_content_type: application/zip
+
+    - uses: eregon/publish-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+      with:
+        release_id: ${{ steps.create_release.outputs.id }}
