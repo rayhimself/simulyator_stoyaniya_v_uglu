@@ -16,12 +16,8 @@ jobs:
     env: 
       GOOS: windows
     steps:
-    - name: Retrieve version
-      run: | 
-        VERSION=`date +%Y-%m-%d` \
-        echo $VERSION \
-        echo "GAME_VERSION=$VERSION" >> "$GITHUB_ENV"
-      id: version
+    - name: Set env
+      run: echo "GAME_VERSION=$(date +%Y-%m-%d)" >> $GITHUB_ENV
     - uses: actions/checkout@v3
     - run: sudo apt install zip
     - name: Set up Go
