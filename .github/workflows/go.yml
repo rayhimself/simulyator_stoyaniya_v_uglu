@@ -18,8 +18,8 @@ jobs:
     steps:
     - name: Retrieve version
       run: | 
-        VERSION=`date +%Y-%m-%d` && export VERSION \
-        echo $VERSION
+        VERSION=`date +%Y-%m-%d` \
+        echo $VERSION \
         echo "GAME_VERSION=$VERSION" >> "$GITHUB_ENV"
       id: version
     - uses: actions/checkout@v3
